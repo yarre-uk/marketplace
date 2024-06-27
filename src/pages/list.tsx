@@ -1,19 +1,29 @@
-import { useAccount } from 'wagmi';
+import { useQuery } from '@tanstack/react-query';
 
 import { CardLoader } from '@/components';
-import { UserNFTList } from '@/features';
+import { NFTList } from '@/features';
+import { fetchForAddress } from '@/lib';
+import { bytes } from '@/types';
 
-const ListPage = () => {
-  const { isConnected, address } = useAccount();
+const ListPage = ({ address }: { address: bytes }) => {
+  const { data, isLoading, isError, isRefetching, error } = useQuery({
+    queryKey: ['asdddddddddasdsadasd', address],
+    queryFn: () => fetchForAddress(address),
+    refetchInterval: 1000 * 60,
+  });
 
-  if (!address || !isConnected) {
+  if (!data || isLoading || isRefetching || isError) {
+    if (isError) {
+      console.error(error);
+    }
+
     return <CardLoader />;
   }
 
   return (
     <div>
-      <p>Market</p>
-      {isConnected && <UserNFTList address={address} />}
+      <h1 className="text-3xl">List</h1>
+      <NFTList nfts={data.result} />
     </div>
   );
 };

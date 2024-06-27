@@ -1,11 +1,13 @@
-export type NFTRequestResponse<NFTType extends AllNFT | UserNFT> = {
-  nfts: NFTs<NFTType>;
+export type NFTVariants = AllNFT | UserNFT;
+
+export type NFTRequestResponse<NFTVariants> = {
+  nfts: NFTs<NFTVariants>;
 };
 
-export type NFTs<T> = {
+export type NFTs<NFTVariants> = {
   page: number;
   page_size: number;
-  result: T[];
+  result: NFTVariants[];
 };
 
 export type AllNFT = {

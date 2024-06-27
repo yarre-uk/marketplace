@@ -1,6 +1,6 @@
 import { useAccount, useDisconnect } from 'wagmi';
 
-import { Button } from '@/components/button';
+import { Button } from '@/components/shadcn/button';
 
 export const Account = () => {
   const { address } = useAccount();

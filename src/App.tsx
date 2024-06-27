@@ -6,7 +6,7 @@ import { Layout } from './features';
 import { HomePage, ListPage, MarketPage } from './pages';
 
 const App = () => {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
   return (
     <>
@@ -16,12 +16,15 @@ const App = () => {
 
           <Route path={ROUTE.MARKET} element={<MarketPage />} />
 
-          {isConnected && (
+          {isConnected && address ? (
             <>
               <Route path={ROUTE.ORDERS} element={<div>Orders</div>} />
-              <Route path={ROUTE.LIST} element={<ListPage />} />
+              <Route
+                path={ROUTE.LIST}
+                element={<ListPage address={address} />}
+              />
             </>
-          )}
+          ) : null}
 
           <Route path="*" element={<div>404</div>} />
         </Route>

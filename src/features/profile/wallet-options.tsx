@@ -1,6 +1,6 @@
 import { useConnect } from 'wagmi';
 
-import { Button } from '@/components/button';
+import { Button } from '@/components/shadcn/button';
 
 export const WalletOptions = () => {
   const { connectors, connect } = useConnect();

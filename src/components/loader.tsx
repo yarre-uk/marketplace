@@ -1,4 +1,4 @@
-import { Card } from './card';
+import { Card } from './shadcn/card';
 
 export const Loader = () => {
   return (

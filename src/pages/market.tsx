@@ -1,10 +1,10 @@
-import { NFTList } from '@/features';
+import { MarketNFTList } from '@/features';
 
 const MarketPage = () => {
   return (
     <div>
       <p>Market</p>
-      <NFTList />
+      <MarketNFTList />
     </div>
   );
 };

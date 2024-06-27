@@ -1,3 +1,4 @@
 export { default as Profile } from './profile/profile';
 export { default as Layout } from './layout';
-export { NFTList } from './market/nft-list';
+export { MarketNFTList } from './market/list';
+export { UserNFTList } from './list/list';

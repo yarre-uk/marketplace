@@ -1,6 +1,6 @@
-import { proxyRaffleAbi, proxyRaffleAddress } from '.';
+import { marketplaceAbi, marketplaceAddress } from '.';
 
-export const proxyContract = {
-  address: proxyRaffleAddress,
-  abi: proxyRaffleAbi,
+export const marketplaceContract = {
+  address: marketplaceAddress,
+  abi: marketplaceAbi,
 } as const;

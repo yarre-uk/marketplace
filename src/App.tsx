@@ -1,27 +1,32 @@
 import { Route, Routes } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
-import { Layout } from './components';
 import { ROUTE } from './constants';
-import { GovernancePage, HomePage, PlayPage } from './pages';
+import { Layout } from './features';
+import { HomePage, MarketPage } from './pages';
 
 const App = () => {
   const { isConnected } = useAccount();
 
   return (
-    <Routes>
-      <Route path={ROUTE.HOME} element={<Layout />}>
-        <Route index element={<HomePage />} />
-        {isConnected && (
-          <>
-            <Route path={ROUTE.PLAY} element={<PlayPage />} />
-            <Route path={ROUTE.GOVERNANCE} element={<GovernancePage />} />
-          </>
-        )}
+    <>
+      <Routes>
+        <Route path={ROUTE.HOME} element={<Layout />}>
+          <Route index element={<HomePage />} />
 
-        <Route path="*" element={<div>404</div>} />
-      </Route>
-    </Routes>
+          <Route path={ROUTE.MARKET} element={<MarketPage />} />
+
+          {isConnected && (
+            <>
+              <Route path={ROUTE.ORDERS} element={<div>Orders</div>} />
+              <Route path={ROUTE.LIST} element={<div>List</div>} />
+            </>
+          )}
+
+          <Route path="*" element={<div>404</div>} />
+        </Route>
+      </Routes>
+    </>
   );
 };
 

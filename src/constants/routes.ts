@@ -1,5 +1,6 @@
 export const ROUTE = {
   HOME: '/',
-  PLAY: '/play',
-  GOVERNANCE: '/governance',
+  MARKET: '/market',
+  LIST: '/list',
+  ORDERS: '/orders',
 };

@@ -1,3 +1,3 @@
 export { cn } from './cn';
 export { axiosClient } from './axios';
-export { fetchAllNFTs, fetchForAddress } from './requests';
+export { fetchForAddress } from './requests';

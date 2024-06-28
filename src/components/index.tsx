@@ -43,4 +43,5 @@ export {
   AccordionTrigger,
   AccordionContent,
 } from './shadcn/accordion';
-export { default as NFTItem } from './nfr-list-item';
+export { default as NFTItem } from './nfr-item';
+export { default as OrderItem } from './order-item';

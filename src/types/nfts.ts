@@ -1,19 +1,11 @@
-export type NFTVariants = AllNFT | UserNFT;
-
-export type NFTRequestResponse<NFTVariants> = {
-  nfts: NFTs<NFTVariants>;
+export type NFTRequestResponse = {
+  nfts: NFTs;
 };
 
-export type NFTs<NFTVariants> = {
+export type NFTs = {
   page: number;
   page_size: number;
-  result: NFTVariants[];
-};
-
-export type AllNFT = {
-  token_id: string;
-  token_uri: string;
-  minter_address: string;
+  result: UserNFT[];
 };
 
 export type UserNFT = {

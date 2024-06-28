@@ -1,18 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@apollo/client';
 
 import { CardLoader } from '@/components';
-import { NFTList } from '@/features';
-import { fetchAllNFTs } from '@/lib';
+import { OrderList } from '@/features';
+import { queryOrdersForSale, QueryOrdersResponse } from '@/types';
 
 const MarketPage = () => {
-  const { data, isLoading, isError, isRefetching, error } = useQuery({
-    queryKey: ['!!!!!!!!!!!!!'],
-    queryFn: fetchAllNFTs,
-    refetchInterval: 1000 * 60,
-  });
+  const {
+    data: orders,
+    loading,
+    error,
+  } = useQuery<QueryOrdersResponse>(queryOrdersForSale);
 
-  if (!data || isLoading || isRefetching || isError) {
-    if (isError) {
+  if (!orders || loading || error) {
+    if (error) {
       console.error(error);
     }
 
@@ -22,7 +22,7 @@ const MarketPage = () => {
   return (
     <div>
       <h1 className="text-3xl">Market</h1>
-      <NFTList nfts={data.result} />
+      <OrderList orders={orders.orders} />
     </div>
   );
 };

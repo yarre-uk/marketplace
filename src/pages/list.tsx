@@ -7,7 +7,7 @@ import { bytes } from '@/types';
 
 const ListPage = ({ address }: { address: bytes }) => {
   const { data, isLoading, isError, isRefetching, error } = useQuery({
-    queryKey: ['asdddddddddasdsadasd', address],
+    queryKey: ['nfts', 'user', address],
     queryFn: () => fetchForAddress(address),
     refetchInterval: 1000 * 60,
   });

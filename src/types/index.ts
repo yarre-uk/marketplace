@@ -1,8 +1,7 @@
 export type { bytes } from './shared';
-export type {
-  AllNFT,
-  UserNFT,
-  NFTs,
-  NFTRequestResponse,
-  NFTVariants,
-} from './nfts';
+export type { UserNFT, NFTs, NFTRequestResponse } from './nfts';
+export {
+  queryOrdersForSale,
+  type QueryOrdersResponse,
+  type Order,
+} from './graphql/nfts';

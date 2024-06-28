@@ -22,7 +22,7 @@ const MarketPage = () => {
   return (
     <div>
       <h1 className="text-3xl">Market</h1>
-      <OrderList orders={orders.orders} />
+      <OrderList orders={orders.orders} mode="market" />
     </div>
   );
 };

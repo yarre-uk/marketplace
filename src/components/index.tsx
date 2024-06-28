@@ -44,4 +44,8 @@ export {
   AccordionContent,
 } from './shadcn/accordion';
 export { default as NFTItem } from './nfr-item';
-export { default as OrderItem } from './order-item';
+export {
+  MarketOrderItem,
+  OrdersOrderItem,
+  YourOrdersOrderItem,
+} from './order-item';

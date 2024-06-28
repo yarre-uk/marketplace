@@ -1,5 +1,7 @@
 import { gql } from '@apollo/client';
 
+import { bytes } from '../shared';
+
 export const queryOrdersForSale = gql`
   query {
     orders(where: { orderType: 0, orderStatus: 0 }) {
@@ -19,8 +21,8 @@ export type QueryOrdersResponse = {
 };
 
 export type FullOrder = {
-  id: string;
-  sender: string;
+  id: bytes;
+  sender: bytes;
   orderType: number;
   orderStatus: number;
   price: bigint;

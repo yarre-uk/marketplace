@@ -38,7 +38,7 @@ const YourOrdersPage = ({ address }: { address: bytes }) => {
   return (
     <div>
       <h1 className="text-3xl">Your orders:</h1>
-      <OrderList orders={orders.orders} />
+      <OrderList orders={orders.orders} mode="your-orders" />
     </div>
   );
 };

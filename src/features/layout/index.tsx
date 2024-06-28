@@ -24,6 +24,10 @@ const AuthRoutes = [
     to: ROUTE.ORDERS,
     label: 'ORDERS',
   },
+  {
+    to: ROUTE.YOUR_ORDERS,
+    label: 'YOUR ORDERS',
+  },
 ] satisfies { to: string; label: string }[];
 
 const Layout = () => {

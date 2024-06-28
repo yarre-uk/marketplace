@@ -3,4 +3,5 @@ export const ROUTE = {
   MARKET: '/market',
   LIST: '/list',
   ORDERS: '/orders',
+  YOUR_ORDERS: '/your-orders',
 };

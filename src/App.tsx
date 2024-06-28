@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi';
 
 import { ROUTE } from './constants';
 import { Layout } from './features';
-import { HomePage, ListPage, MarketPage } from './pages';
+import { HomePage, ListPage, MarketPage, OrdersPage } from './pages';
 
 const App = () => {
   const { address, isConnected } = useAccount();
@@ -18,7 +18,10 @@ const App = () => {
 
           {isConnected && address ? (
             <>
-              <Route path={ROUTE.ORDERS} element={<div>Orders</div>} />
+              <Route
+                path={ROUTE.ORDERS}
+                element={<OrdersPage address={address} />}
+              />
               <Route
                 path={ROUTE.LIST}
                 element={<ListPage address={address} />}

@@ -15,10 +15,10 @@ export const queryOrdersForSale = gql`
 `;
 
 export type QueryOrdersResponse = {
-  orders: Order[];
+  orders: FullOrder[];
 };
 
-export type Order = {
+export type FullOrder = {
   id: string;
   sender: string;
   orderType: number;

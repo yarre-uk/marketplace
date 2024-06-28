@@ -1,9 +1,9 @@
 import { useAccount } from 'wagmi';
 
 import { Card, OrderItem } from '@/components';
-import { Order } from '@/types';
+import { FullOrder } from '@/types';
 
-export const OrderList = ({ orders }: { orders: Order[] }) => {
+export const OrderList = ({ orders }: { orders: FullOrder[] }) => {
   const { address } = useAccount();
 
   return (

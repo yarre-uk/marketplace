@@ -3,5 +3,5 @@ export type { UserNFT, NFTs, NFTRequestResponse } from './nfts';
 export {
   queryOrdersForSale,
   type QueryOrdersResponse,
-  type Order,
+  type FullOrder,
 } from './graphql/nfts';

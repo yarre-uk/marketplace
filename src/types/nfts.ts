@@ -9,7 +9,7 @@ export type NFTs = {
 };
 
 export type UserNFT = {
-  token_id: string;
+  token_id: number;
   token_uri: string;
   owner_of: string;
 };

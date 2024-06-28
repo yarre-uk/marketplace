@@ -6,22 +6,22 @@ import { bytes } from '@/types';
 
 type TransactionInfoProps = {
   hash: bytes | undefined;
-  isConfirming: boolean;
-  isConfirmed: boolean;
+  isLoading: boolean;
+  isSuccess: boolean;
   error: WriteContractErrorType | null;
 };
 
 const TransactionInfo = ({
   error,
   hash,
-  isConfirmed,
-  isConfirming,
+  isSuccess,
+  isLoading,
 }: TransactionInfoProps) => {
   return (
     <div>
       {hash && <div>Transaction Hash: {hash}</div>}
-      {isConfirming && <div>Waiting for confirmation...</div>}
-      {isConfirmed && <div>Transaction confirmed.</div>}
+      {isLoading && <div>Waiting for confirmation...</div>}
+      {isSuccess && <div>Transaction confirmed.</div>}
       {error && (
         <div>Error: {(error as BaseError).shortMessage || error.message}</div>
       )}

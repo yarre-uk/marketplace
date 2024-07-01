@@ -4,4 +4,5 @@ export const ROUTE = {
   LIST: '/list',
   ORDERS: '/orders',
   YOUR_ORDERS: '/your-orders',
+  APPROVE: '/approve',
 };

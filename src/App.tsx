@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi';
 import { ROUTE } from './constants';
 import { Layout } from './features';
 import {
+  ApprovePage,
   HomePage,
   ListPage,
   MarketPage,
@@ -35,6 +36,10 @@ const App = () => {
               <Route
                 path={ROUTE.LIST}
                 element={<ListPage address={address} />}
+              />
+              <Route
+                path={ROUTE.APPROVE}
+                element={<ApprovePage address={address} />}
               />
             </>
           ) : null}

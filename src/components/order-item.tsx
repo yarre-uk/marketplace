@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { useTransactionReceipt, useWriteContract } from 'wagmi';
 
@@ -15,7 +14,7 @@ import {
   Label,
 } from '@/components';
 import { marketplaceContract } from '@/constants';
-import { bytes, FullOrder, QueryOrdersResponse } from '@/types';
+import { bytes, FullOrder } from '@/types';
 
 const orderType: Record<number, string> = {
   0: 'Sale',
@@ -111,40 +110,22 @@ export const MarketOrderItem = ({
 
 export const OrdersOrderItem = ({
   order,
-  address,
+  orders,
 }: {
   order: FullOrder;
-  address: bytes | undefined;
+  orders: FullOrder[];
 }) => {
-  const queryUserQueries = gql`
-    query ($address: ID!) {
-      orders(where: { orderStatus: 0, sender: $address }) {
-        id
-        sender
-        orderType
-        orderStatus
-        price
-        nftId
-        createdAt
-      }
-    }
-  `;
-
-  const { data: orders } = useQuery<QueryOrdersResponse>(queryUserQueries, {
-    variables: { address },
-  });
-
   const { data: hash, error: writeError, writeContract } = useWriteContract();
 
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
   const handleSell = async () => {
-    if (orders == undefined || orders.orders.length == 0) {
+    if (orders == undefined || orders.length == 0) {
       return;
     }
-
-    const sellOrderId = orders.orders.find(
-      (order) => order.nftId == order.nftId,
+    const sellOrderId = orders.find(
+      (sellOrder) =>
+        sellOrder.nftId == order.nftId && sellOrder.orderType === 0,
     )?.id;
 
     if (sellOrderId == undefined) {
@@ -165,7 +146,12 @@ export const OrdersOrderItem = ({
         <AccordionItem value="item-1">
           <AccordionTrigger>Want to sell?</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 p-4">
-            <Button onClick={handleSell}>Sell</Button>
+            <Button
+              disabled={orders == undefined || orders.length == 0}
+              onClick={handleSell}
+            >
+              Sell
+            </Button>
             <Transaction
               error={writeError}
               hash={hash}

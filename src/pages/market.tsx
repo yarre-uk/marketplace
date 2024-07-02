@@ -1,18 +1,18 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@tanstack/react-query';
 
 import { CardLoader } from '@/components';
 import { OrderList } from '@/features';
-import { queryOrdersForSale, QueryOrdersResponse } from '@/types';
+import { fetchSaleOrders } from '@/lib';
 
 const MarketPage = () => {
-  const {
-    data: orders,
-    loading,
-    error,
-  } = useQuery<QueryOrdersResponse>(queryOrdersForSale);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['orders', 'sell'],
+    queryFn: () => fetchSaleOrders(),
+    refetchInterval: 1000 * 60,
+  });
 
-  if (!orders || loading || error) {
-    if (error) {
+  if (!data || isLoading || isError) {
+    if (isError) {
       console.error(error);
     }
 
@@ -22,7 +22,7 @@ const MarketPage = () => {
   return (
     <div>
       <h1 className="text-3xl">Market</h1>
-      <OrderList orders={orders.orders} mode="market" />
+      <OrderList orders={data} mode="market" />
     </div>
   );
 };

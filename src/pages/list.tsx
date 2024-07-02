@@ -2,17 +2,17 @@ import { useQuery } from '@tanstack/react-query';
 
 import { CardLoader } from '@/components';
 import { NFTList } from '@/features';
-import { fetchForAddress } from '@/lib';
+import { fetchUserNFTs } from '@/lib';
 import { bytes } from '@/types';
 
 const ListPage = ({ address }: { address: bytes }) => {
-  const { data, isLoading, isError, isRefetching, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['nfts', 'user', address],
-    queryFn: () => fetchForAddress(address),
+    queryFn: () => fetchUserNFTs(address),
     refetchInterval: 1000 * 60,
   });
 
-  if (!data || isLoading || isRefetching || isError) {
+  if (!data || isLoading || isError) {
     if (isError) {
       console.error(error);
     }

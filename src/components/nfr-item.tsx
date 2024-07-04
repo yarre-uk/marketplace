@@ -1,5 +1,9 @@
+import { getBlockNumber, signMessage } from '@wagmi/core';
+import random from 'crypto-random-bigint';
 import { useState } from 'react';
+import { encodePacked, keccak256, toBytes } from 'viem';
 import { useWriteContract, useTransactionReceipt } from 'wagmi';
+import { currentChain, wagmiConfig } from 'wagmiConfig';
 
 import Transaction from './transaction';
 
@@ -13,14 +17,12 @@ import {
   Input,
   Label,
 } from '@/components';
-import { marketplaceContract } from '@/constants';
-import { UserNFT } from '@/types';
+import { marketplaceAddress, marketplaceContract } from '@/constants';
+import { bytes, OrderDto, UserNFT } from '@/types';
 
-const NFTItem = ({ nft }: { nft: UserNFT }) => {
+const NFTItem = ({ nft, address }: { nft: UserNFT; address: bytes }) => {
   const [price, setPrice] = useState<number>(0);
-
   const { data: hash, error, writeContract } = useWriteContract();
-
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
   const handleSell = async () => {
@@ -28,10 +30,54 @@ const NFTItem = ({ nft }: { nft: UserNFT }) => {
       return;
     }
 
+    const blockNumber = await getBlockNumber(wagmiConfig);
+
+    const _order: OrderDto = {
+      createdAt: blockNumber,
+      nftId: BigInt(nft.token_id),
+      orderType: 0,
+      price: BigInt(price),
+      sender: address,
+      status: 0,
+    };
+
+    const nonce = random(128);
+
+    const hash = keccak256(
+      encodePacked(
+        [
+          'uint256',
+          'uint256',
+          'uint8',
+          'uint256',
+          'address',
+          'uint8',
+          'uint256',
+          'uint256',
+          'address',
+        ],
+        [
+          _order.createdAt,
+          BigInt(_order.nftId),
+          _order.orderType,
+          _order.price,
+          _order.sender,
+          _order.status,
+          BigInt(currentChain.id),
+          nonce,
+          marketplaceAddress,
+        ],
+      ),
+    );
+
+    const signature = await signMessage(wagmiConfig, {
+      message: { raw: toBytes(hash) },
+    });
+
     writeContract({
       ...marketplaceContract,
       functionName: 'createOrder',
-      args: [BigInt(price), BigInt(nft.token_id), 0],
+      args: [_order, signature, nonce],
     });
   };
 

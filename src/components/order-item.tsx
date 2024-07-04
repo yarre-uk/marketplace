@@ -1,5 +1,9 @@
+import { getBlockNumber, signMessage } from '@wagmi/core';
+import random from 'crypto-random-bigint';
 import { useState } from 'react';
+import { encodePacked, keccak256, toBytes } from 'viem';
 import { useTransactionReceipt, useWriteContract } from 'wagmi';
+import { currentChain, wagmiConfig } from 'wagmiConfig';
 
 import Transaction from './transaction';
 
@@ -13,8 +17,8 @@ import {
   Input,
   Label,
 } from '@/components';
-import { marketplaceContract } from '@/constants';
-import { bytes, FullOrder } from '@/types';
+import { marketplaceAddress, marketplaceContract } from '@/constants';
+import { bytes, FullOrder, OrderDto } from '@/types';
 
 const orderType: Record<number, string> = {
   0: 'Sale',
@@ -26,6 +30,7 @@ const orderStatus: Record<number, string> = {
   1: 'Processed',
   2: 'Canceled',
 };
+
 const OrderInfo = ({ order }: { order: FullOrder }) => {
   return (
     <>
@@ -51,7 +56,7 @@ export const MarketOrderItem = ({
   address,
 }: {
   order: FullOrder;
-  address: bytes | undefined;
+  address: bytes;
 }) => {
   const [price, setPrice] = useState<number>(0);
 
@@ -64,10 +69,54 @@ export const MarketOrderItem = ({
       return;
     }
 
+    const blockNumber = await getBlockNumber(wagmiConfig);
+
+    const _order: OrderDto = {
+      createdAt: blockNumber,
+      nftId: BigInt(order.nftId),
+      orderType: 1,
+      price: BigInt(price),
+      sender: address,
+      status: 0,
+    };
+
+    const nonce = random(128);
+
+    const hash = keccak256(
+      encodePacked(
+        [
+          'uint256',
+          'uint256',
+          'uint8',
+          'uint256',
+          'address',
+          'uint8',
+          'uint256',
+          'uint256',
+          'address',
+        ],
+        [
+          _order.createdAt,
+          BigInt(_order.nftId),
+          _order.orderType,
+          _order.price,
+          _order.sender,
+          _order.status,
+          BigInt(currentChain.id),
+          nonce,
+          marketplaceAddress,
+        ],
+      ),
+    );
+
+    const signature = await signMessage(wagmiConfig, {
+      message: { raw: toBytes(hash) },
+    });
+
     writeContract({
       ...marketplaceContract,
       functionName: 'createOrder',
-      args: [BigInt(price), order.nftId, 1],
+      args: [_order, signature, nonce],
     });
   };
 
@@ -115,7 +164,7 @@ export const OrdersOrderItem = ({
   order: FullOrder;
   orders: FullOrder[];
 }) => {
-  const { data: hash, error: writeError, writeContract } = useWriteContract();
+  const { data: hash, error: writeError } = useWriteContract();
 
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
@@ -132,11 +181,11 @@ export const OrdersOrderItem = ({
       throw new Error('Sell order not found');
     }
 
-    writeContract({
-      ...marketplaceContract,
-      functionName: 'processOrder',
-      args: [sellOrderId, order.id],
-    });
+    // writeContract({
+    //   ...marketplaceContract,
+    //   functionName: 'processOrder',
+    //   args: [sellOrderId, order.id],
+    // });
   };
 
   return (
@@ -166,16 +215,16 @@ export const OrdersOrderItem = ({
 };
 
 export const YourOrdersOrderItem = ({ order }: { order: FullOrder }) => {
-  const { data: hash, error: writeError, writeContract } = useWriteContract();
+  const { data: hash, error: writeError } = useWriteContract();
 
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
   const handleBuy = async () => {
-    writeContract({
-      ...marketplaceContract,
-      functionName: 'cancelOrder',
-      args: [order.id],
-    });
+    // writeContract({
+    //   ...marketplaceContract,
+    //   functionName: 'cancelOrder',
+    //   args: [order.id],
+    // });
   };
 
   return (

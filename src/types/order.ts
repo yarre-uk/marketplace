@@ -9,3 +9,12 @@ export type FullOrder = {
   nftId: bigint;
   createdAt: bigint;
 };
+
+export type OrderDto = {
+  sender: bytes;
+  price: bigint;
+  createdAt: bigint;
+  nftId: bigint;
+  orderType: number;
+  status: number;
+};

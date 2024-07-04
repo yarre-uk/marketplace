@@ -32,7 +32,11 @@ export const OrderList = ({
     <Card className="flex flex-wrap justify-evenly gap-4 p-8">
       {orders.map((order) =>
         mode === 'market' ? (
-          <MarketOrderItem key={order.id} order={order} address={address} />
+          <MarketOrderItem
+            key={order.id}
+            order={order}
+            address={address ?? '0x'}
+          />
         ) : mode === 'orders' ? (
           <OrdersOrderItem key={order.id} order={order} orders={data ?? []} />
         ) : (

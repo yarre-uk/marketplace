@@ -22,6 +22,33 @@ export const marketplaceAbi = [
   },
   {
     inputs: [],
+    name: 'ECDSAInvalidSignature',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'length',
+        type: 'uint256',
+      },
+    ],
+    name: 'ECDSAInvalidSignatureLength',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32',
+      },
+    ],
+    name: 'ECDSAInvalidSignatureS',
+    type: 'error',
+  },
+  {
+    inputs: [],
     name: 'InvalidInitialization',
     type: 'error',
   },
@@ -77,17 +104,11 @@ export const marketplaceAbi = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'sender',
+        name: 'executer',
         type: 'address',
       },
-      {
-        indexed: true,
-        internalType: 'enum OrderType',
-        name: 'orderType',
-        type: 'uint8',
-      },
     ],
-    name: 'OrderCreated',
+    name: 'OrderCanceled',
     type: 'event',
   },
   {
@@ -102,14 +123,57 @@ export const marketplaceAbi = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'executer',
+        name: 'sender',
         type: 'address',
       },
       {
         indexed: true,
-        internalType: 'enum OrderStatus',
-        name: 'state',
+        internalType: 'enum OrderType',
+        name: 'orderType',
         type: 'uint8',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'price',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'nftId',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'createdAt',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes',
+        name: 'signature',
+        type: 'bytes',
+      },
+    ],
+    name: 'OrderCreated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'sellOrderId',
+        type: 'bytes32',
+      },
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'buyOrderId',
+        type: 'bytes32',
       },
     ],
     name: 'OrderProcessed',
@@ -225,9 +289,51 @@ export const marketplaceAbi = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: 'address',
+            name: 'sender',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'price',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'createdAt',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'nftId',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum OrderType',
+            name: 'orderType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'enum OrderStatus',
+            name: 'status',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct Order',
+        name: '_order',
+        type: 'tuple',
+      },
+      {
         internalType: 'bytes32',
-        name: '_orderId',
+        name: '_id',
         type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: '_nonce',
+        type: 'uint256',
       },
     ],
     name: 'cancelOrder',
@@ -237,43 +343,6 @@ export const marketplaceAbi = [
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: '_price',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_nftId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'enum OrderType',
-        name: '_orderType',
-        type: 'uint8',
-      },
-    ],
-    name: 'createOrder',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: '_orderId',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getOrder',
-    outputs: [
       {
         components: [
           {
@@ -308,11 +377,29 @@ export const marketplaceAbi = [
           },
         ],
         internalType: 'struct Order',
-        name: 'order',
+        name: '_order',
         type: 'tuple',
       },
+      {
+        internalType: 'bytes',
+        name: '_signature',
+        type: 'bytes',
+      },
+      {
+        internalType: 'uint256',
+        name: '_nonce',
+        type: 'uint256',
+      },
     ],
-    stateMutability: 'view',
+    name: 'createOrder',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -401,6 +488,25 @@ export const marketplaceAbi = [
         name: '',
         type: 'uint256',
       },
+    ],
+    name: 'nonces',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
       {
         internalType: 'address',
         name: '',
@@ -434,6 +540,80 @@ export const marketplaceAbi = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: 'address',
+            name: 'sender',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'price',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'createdAt',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'nftId',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum OrderType',
+            name: 'orderType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'enum OrderStatus',
+            name: 'status',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct Order',
+        name: '_sellOrder',
+        type: 'tuple',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'sender',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'price',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'createdAt',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'nftId',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum OrderType',
+            name: 'orderType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'enum OrderStatus',
+            name: 'status',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct Order',
+        name: '_buyOrder',
+        type: 'tuple',
+      },
+      {
         internalType: 'bytes32',
         name: '_sellOrderId',
         type: 'bytes32',
@@ -442,6 +622,16 @@ export const marketplaceAbi = [
         internalType: 'bytes32',
         name: '_buyOrderId',
         type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: '_nonce1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_nonce2',
+        type: 'uint256',
       },
     ],
     name: 'processOrder',
@@ -508,6 +698,47 @@ export const marketplaceAbi = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: '_nftId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_user',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: '_value',
+        type: 'bool',
+      },
+    ],
+    name: 'setOrdered',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_id',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '_value',
+        type: 'bytes',
+      },
+    ],
+    name: 'setOrders',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'contract WETH',
         name: '_tokenWeth',
         type: 'address',
@@ -516,6 +747,25 @@ export const marketplaceAbi = [
     name: 'setWETHContract',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    name: 'signatures',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

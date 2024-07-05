@@ -38,7 +38,12 @@ export const OrderList = ({
             address={address ?? '0x'}
           />
         ) : mode === 'orders' ? (
-          <OrdersOrderItem key={order.id} order={order} orders={data ?? []} />
+          <OrdersOrderItem
+            key={order.id}
+            address={address ?? '0x'}
+            order={order}
+            orders={data ?? []}
+          />
         ) : (
           <YourOrdersOrderItem key={order.id} order={order} />
         ),

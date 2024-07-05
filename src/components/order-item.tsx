@@ -18,6 +18,7 @@ import {
   Label,
 } from '@/components';
 import { marketplaceAddress, marketplaceContract } from '@/constants';
+import { axiosClient } from '@/lib';
 import { bytes, FullOrder, OrderDto } from '@/types';
 
 const orderType: Record<number, string> = {
@@ -60,7 +61,7 @@ export const MarketOrderItem = ({
 }) => {
   const [price, setPrice] = useState<number>(0);
 
-  const { data: hash, error, writeContract } = useWriteContract();
+  const { data: hash, error, writeContractAsync } = useWriteContract();
 
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
@@ -113,7 +114,7 @@ export const MarketOrderItem = ({
       message: { raw: toBytes(hash) },
     });
 
-    writeContract({
+    writeContractAsync({
       ...marketplaceContract,
       functionName: 'createOrder',
       args: [_order, signature, nonce],
@@ -161,10 +162,11 @@ export const OrdersOrderItem = ({
   order,
   orders,
 }: {
+  address: bytes;
   order: FullOrder;
   orders: FullOrder[];
 }) => {
-  const { data: hash, error: writeError } = useWriteContract();
+  const { data: hash, error: writeError, writeContract } = useWriteContract();
 
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
@@ -172,20 +174,35 @@ export const OrdersOrderItem = ({
     if (orders == undefined || orders.length == 0) {
       return;
     }
-    const sellOrderId = orders.find(
+    const sellOrder = orders.find(
       (sellOrder) =>
         sellOrder.nftId == order.nftId && sellOrder.orderType === 0,
-    )?.id;
+    );
 
-    if (sellOrderId == undefined) {
+    if (sellOrder == undefined) {
       throw new Error('Sell order not found');
     }
 
-    // writeContract({
-    //   ...marketplaceContract,
-    //   functionName: 'processOrder',
-    //   args: [sellOrderId, order.id],
-    // });
+    const res = await axiosClient.post<{
+      sellNonce: bytes;
+      buyNonce: bytes;
+    }>('order/prepare/process', {
+      sellOrderId: sellOrder.id,
+      buyOrderId: order.id,
+    });
+
+    writeContract({
+      ...marketplaceContract,
+      functionName: 'processOrder',
+      args: [
+        { ...sellOrder, status: sellOrder.orderStatus },
+        { ...order, status: order.orderStatus },
+        sellOrder.id,
+        order.id,
+        BigInt(res.data.sellNonce),
+        BigInt(res.data.buyNonce),
+      ],
+    });
   };
 
   return (
@@ -215,16 +232,28 @@ export const OrdersOrderItem = ({
 };
 
 export const YourOrdersOrderItem = ({ order }: { order: FullOrder }) => {
-  const { data: hash, error: writeError } = useWriteContract();
+  const { data: hash, error: writeError, writeContract } = useWriteContract();
 
   const { isLoading, isSuccess } = useTransactionReceipt({ hash });
 
-  const handleBuy = async () => {
-    // writeContract({
-    //   ...marketplaceContract,
-    //   functionName: 'cancelOrder',
-    //   args: [order.id],
-    // });
+  const handleCancel = async () => {
+    const res = await axiosClient.post<{
+      _order: FullOrder;
+      nonce: string;
+    }>('order/prepare/cancel', {
+      orderId: order.id,
+      address: order.sender,
+    });
+
+    writeContract({
+      ...marketplaceContract,
+      functionName: 'cancelOrder',
+      args: [
+        { ...order, status: order.orderStatus },
+        order.id,
+        BigInt(res.data.nonce),
+      ],
+    });
   };
 
   return (
@@ -234,7 +263,7 @@ export const YourOrdersOrderItem = ({ order }: { order: FullOrder }) => {
         <AccordionItem value="item-1">
           <AccordionTrigger>Want to cancel?</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 p-4">
-            <Button onClick={handleBuy}>Cancel</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
             <Transaction
               error={writeError}
               hash={hash}

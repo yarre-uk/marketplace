@@ -8,6 +8,7 @@ import {
   HomePage,
   ListPage,
   MarketPage,
+  OrderBookPage,
   OrdersPage,
   YourOrdersPage,
 } from './pages';
@@ -41,6 +42,7 @@ const App = () => {
                 path={ROUTE.APPROVE}
                 element={<ApprovePage address={address} />}
               />
+              <Route path={ROUTE.ORDER_BOOK} element={<OrderBookPage />} />
             </>
           ) : null}
 

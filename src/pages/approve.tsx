@@ -7,6 +7,7 @@ import {
 
 import { Button, Input, TransactionInfo, Card, Label } from '@/components';
 import { erc721Contract, marketplaceAddress, wethContract } from '@/constants';
+import { erc1155Contract } from '@/constants/contracts';
 import { bytes } from '@/types';
 
 const ApprovePage = ({ address }: { address: bytes }) => {
@@ -32,9 +33,17 @@ const ApprovePage = ({ address }: { address: bytes }) => {
     });
   };
 
-  const onApproveNFTs = () => {
+  const onERC721Approve = () => {
     writeContract({
       ...erc721Contract,
+      functionName: 'setApprovalForAll',
+      args: [marketplaceAddress, true],
+    });
+  };
+
+  const onERC1155Approve = () => {
+    writeContract({
+      ...erc1155Contract,
       functionName: 'setApprovalForAll',
       args: [marketplaceAddress, true],
     });
@@ -60,9 +69,20 @@ const ApprovePage = ({ address }: { address: bytes }) => {
         />
       </Card>
       <Card className="flex min-w-[600px] flex-col gap-2 p-4">
-        <p>Weth</p>
+        <p>ERC721</p>
         <Label htmlFor="weth-amount">NFT</Label>
-        <Button onClick={onApproveNFTs}>Approve NFTs</Button>
+        <Button onClick={onERC721Approve}>Approve NFTs</Button>
+        <TransactionInfo
+          error={error}
+          hash={hash}
+          isLoading={isLoading}
+          isSuccess={isSuccess}
+        />
+      </Card>
+      <Card className="flex min-w-[600px] flex-col gap-2 p-4">
+        <p>ERC1155</p>
+        <Label htmlFor="weth-amount">NFT</Label>
+        <Button onClick={onERC1155Approve}>Approve NFTs</Button>
         <TransactionInfo
           error={error}
           hash={hash}

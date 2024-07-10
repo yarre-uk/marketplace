@@ -1,4 +1,6 @@
 import {
+  erc1155Abi,
+  erc1155Address,
   erc721Abi,
   erc721Address,
   marketplaceAbi,
@@ -7,17 +9,29 @@ import {
   wethAddress,
 } from '.';
 
+import { bytes } from '@/types';
+
+type Contract = {
+  address: bytes;
+  abi: object;
+};
+
 export const marketplaceContract = {
   address: marketplaceAddress,
   abi: marketplaceAbi,
-} as const;
+} as const satisfies Contract;
 
 export const erc721Contract = {
   address: erc721Address,
   abi: erc721Abi,
-} as const;
+} as const satisfies Contract;
 
 export const wethContract = {
   address: wethAddress,
   abi: wethAbi,
-} as const;
+} as const satisfies Contract;
+
+export const erc1155Contract = {
+  address: erc1155Address,
+  abi: erc1155Abi,
+} as const satisfies Contract;

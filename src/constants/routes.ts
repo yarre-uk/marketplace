@@ -5,5 +5,5 @@ export const ROUTE = {
   ORDERS: '/orders',
   YOUR_ORDERS: '/your-orders',
   APPROVE: '/approve',
-  ORDER_BOOK: '/order-book',
+  ORDERBOOK: '/orderbook',
 };

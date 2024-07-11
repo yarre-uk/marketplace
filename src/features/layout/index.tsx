@@ -33,8 +33,8 @@ const AuthRoutes = [
     label: 'APPROVE',
   },
   {
-    to: ROUTE.ORDER_BOOK,
-    label: 'ORDER BOOK',
+    to: ROUTE.ORDERBOOK,
+    label: 'ORDERBOOK',
   },
 ] satisfies { to: string; label: string }[];
 

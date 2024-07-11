@@ -5,6 +5,8 @@ import {
   erc721Address,
   marketplaceAbi,
   marketplaceAddress,
+  orderbookAbi,
+  orderbookAddress,
   wethAbi,
   wethAddress,
 } from '.';
@@ -34,4 +36,9 @@ export const wethContract = {
 export const erc1155Contract = {
   address: erc1155Address,
   abi: erc1155Abi,
+} as const satisfies Contract;
+
+export const orderbookContract = {
+  address: orderbookAddress,
+  abi: orderbookAbi,
 } as const satisfies Contract;

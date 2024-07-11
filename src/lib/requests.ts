@@ -1,6 +1,6 @@
 import { axiosClient } from './axios';
 
-import { FullOrder, NFTRequestResponse, bytes } from '@/types';
+import { FullOrder, NFTRequestResponse, Orderbook, bytes } from '@/types';
 
 export const fetchUserNFTs = async (address: bytes) => {
   const response = await axiosClient.get<NFTRequestResponse>(`/nft/${address}`);
@@ -23,5 +23,13 @@ export const fetchFilteredOrders = async (address: bytes) => {
   const response = await axiosClient.get<FullOrder[]>(
     `/order/filtered/${address}`,
   );
+  return response.data;
+};
+
+export const fetchOrderbooks = async () => {
+  const response = await axiosClient.get<{
+    buyOrders: Orderbook[];
+    sellOrders: Orderbook[];
+  }>(`/order/orderbooks`);
   return response.data;
 };

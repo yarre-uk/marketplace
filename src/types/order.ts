@@ -18,3 +18,13 @@ export type OrderDto = {
   orderType: number;
   status: number;
 };
+
+export type Orderbook = {
+  id: bytes;
+  sender: bytes;
+  tokenId: bigint;
+  price: bigint;
+  amount: bigint;
+  createdAt: bigint;
+  orderType: number;
+};
